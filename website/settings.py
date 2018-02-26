@@ -27,9 +27,7 @@ SECRET_KEY = '-l%%mczskb3=zvjxt+j@8th@(rszg3n1n&2rhflavtrtbydp=x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-
-]
+ALLOWED_HOSTS = ['indiegames.herokuapp.com']
 
 
 # Application definition
@@ -98,8 +96,14 @@ WSGI_APPLICATION = 'website.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE':'django.db.backends.postgresql_psycopg2',
+        'NAME':'',
+        'USER':'',
+        'PASSWORD':'',
+        'HOST':'',
+        'PORT':'',
     }
 }
 
@@ -152,6 +156,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
