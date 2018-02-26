@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="col-md-12 row">
+      <div class="d-flex justify-content-center mx-auto">
+        <h3>{% if payment_cancel %}Payment was {{payment_cancel}}led {%elif payment_error%} There was an {{payment_error}} in the payment {% endif %}</h3>
+      </div>
+    </div>
+</div>
+{% endblock content %}

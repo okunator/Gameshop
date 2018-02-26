@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<br>
+<div class="container">
+  <div class="d-flex justify-content-center">
+    <h1>You're playing: {{game}}</h1>
+  </div>
+  <div class="d-flex justify-content-center">
+    <p>{{game.description}}<p>
+  </div>
+</div>
+<div class="container">
+  <div class="d-flex justify-content-center">
+    <iframe id="iframe1" src="{{game.url}}"></iframe>
+  </div>
+</div>
+<br>
+<div class="container">
+  <div class="d-flex justify-content-center">
+    <h1>Highscores:</h1>
+  </div>
+</div>
+<div class="container" style="border:5px solid #6c757d;">
+  <div class="table-responsive">
+    <table class ="table">
+      <tr class="text-center">
+        <th> Player </th>
+        <th> Date </th>
+        <th> Score </th>
+      </tr>
+      {% for score in highscores %}
+        <tr class="text-center">
+          <td class="player" style="width:33%;"> {{ score.player }} </a> </td>
+          <td class="date" style="width:33%;"> {{ score.date }} </td>
+          <td class="scores" style="width:33%;"> {{ score.score }} </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+<br><br>
+
+
+<script>
+
+$(document).ready(function() {
+// =============================================================
+// CSRF code from https://docs.djangoproject.com/en/2.0/ref/csrf/
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+    }
+  });
+// ================================================================
+
+  var ifr = document.querySelector('#iframe1').contentWindow;
+  var user = {{user.id}};
+  var game = {{game.id}};
+  var url =  '{{game.url}}';
+  //listening for messages from the game
+  $(window).on('message', function(evt){
+
+  		var event = evt.originalEvent;
+  		var url_str = this.location.pathname //'{{request.build_absolute_uri}}';
+
+  		switch (event.data.messageType){
+        case "SETTING":
+          console.log(event);
+          var width = parseInt(event.data.options.width);
+          var height = parseInt(event.data.options.height);
+          $('#iframe1').css('width',width);
+          $('#iframe1').css('height',height);
+          break;
+
+  			case "SCORE":
+          console.log(event);
+          console.log(this.location.pathname);
+  				$.post(url_str,
+    				{
+    					type: "SCORE",
+    					user: user,
+    					game: game,
+    					score: event.data.score
+    				},
+			      function(data){
+				      var message = {messageType: "MESSAGE", message: data};
+              console.log(message);
+				      ifr.postMessage(message, url);
+            },
+          );
+  				break;
+
+  			case "SAVE":
+          console.log(event);
+  				$.post(url_str,
+    				{
+    					type: "SAVE",
+    					user: user,
+    					game: game,
+    					data: JSON.stringify(event.data.gameState)
+    				},
+    				function(data,status){
+    					var message = {messageType: "MESSAGE", message: data};
+              console.log(message);
+    					ifr.postMessage(message, url);
+       			}
+          );
+  				break;
+
+  			case "LOAD_REQUEST":
+          console.log(event);
+  				$.post(url_str,
+    				{
+    					type: "LOAD",
+    					user: user,
+    					game: game
+    				},
+    				function(data, status){
+              var message;
+    					if(data.length > 1){
+    						var obj = JSON.parse(data);
+       					message = {messageType: "LOAD", gameState: obj};
+                console.log(message);
+    					}else{
+      					message = {messageType: "ERROR", info: "No file to be loaded."};
+                console.log(message);
+      				}
+    					ifr.postMessage(message, url);
+       			}
+          );
+  				break;
+        }
+
+  	});
+//===========================================================================
+});
+</script>
+
+{% endblock content %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+<br>
+<div class="container justify-content-center">
+  <form action="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <br>
+    <input class="btn btn-outline-secondary" type="submit" value="Update" />
+  </form>
+</div>
+{% endblock content %}

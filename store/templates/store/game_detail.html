@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content  %}
+    <br>
+    <div class="row d-flex justify-content-center">
+      <h1>{{ game.name }}</h1>
+      <div class="game-description container-fluid d-flex justify-content-center">
+        <p>{{ game.description }}</p>
+      </div>
+      <div class="game-description container-fluid d-flex justify-content-center">
+        <p>Price: {{ game.price }}$</p>
+      </div>
+    </div>
+    <br>
+      <!-- Tähän pelin kansikuva  -->
+      {% if user.is_authenticated and user == game.developer %}
+      <div class="container">
+        <div class="d-flex justify-content-center">
+          <a href="{% url 'play:playdetail' slug=game.slug %}" class="btn btn-success btn-lg btn-block">Play</a>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center">
+          <a href="{% url 'store:update' slug=game.slug %}" class="btn btn-warning btn-lg btn-block">Update</a>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center">
+          <a href="{% url 'store:delete' slug=game.slug %}" class="btn btn-danger btn-lg btn-block">Delete</a>
+        </div>
+      </div>
+
+      {% elif user.is_authenticated and user in game.owners.all  %}
+      <div class="container">
+        <div class="d-flex justify-content-center">
+          <a class="btn btn-success btn-lg btn-block" href="{% url 'play:playdetail' slug=game.slug %}">Play</a>
+        </div>
+      </div>
+
+
+      {% elif user.is_authenticated and user not in game.owners.all %}
+      <div class="container">
+        <div class="d-flex justify-content-center">
+          <a href="{% url 'store:buy' slug=game.slug  %}" class="btn btn-primary btn-lg btn-block">Buy</a>
+        </div>
+      </div>
+
+      {% else %}
+      <div class="col-md-12 d-flex justify-content-center">
+        <p>You need to have an user account to buy this game</p>
+        <p>{{ user.profile.my_games }}</p>
+      </div>
+      <div class="container d-flex justify-content-center">
+        <a href= "{% url 'accounts:signup' %}" class="btn btn-outline-primary btn-lg btn-block">Sign Up</a>
+      </div>
+      <br>
+      <div class="container d-flex justify-content-center">
+        <a href= "{% url 'accounts:login' %}" class="btn btn-outline-primary btn-lg btn-block">Login</a>
+      </div>
+      {% endif %}
+{% endblock content  %}

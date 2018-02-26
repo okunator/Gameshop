@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="container">
+  <div class="d-flex justify-content-center mx-auto">
+    <h1>Personal gaming stats:</h1>
+  </div>
+</div>
+
+
+<br>
+<div class="container" style="border:5px solid #6c757d;">
+  <div class="d-flex flex-column">
+
+
+    <div class="p-3">
+      <div class ="panel-group">
+        <div class = "panel panel-default">
+
+          <h2 class="text-center"> Personal Library: </h2>
+
+          <div class="table-responsive">
+            <table class ="table">
+              <tr class="text-center">
+                <th> Games </th>
+                <th> Genre </th>
+                <th> Price </th>
+              </tr>
+              {% for game in games  %}
+
+              <tr class="text-center">
+                <td style="width:33%;"> <a href="{% url 'store:gamedetail' slug=game.slug %}"> {{ game.name }} </a> </td>
+                <td style="width:33%;">{{ game.genre }} </td>
+                <td style="width:33%;">{{ game.price }} $ </td>
+              </tr>
+              {% empty %}
+              <p class="text-center">No games in your library. Purchase some <a href="{% url 'home' %}"> here!</a></p>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% for scorelist in personalscores %}
+<br>
+<div class="container" style="border:5px solid #6c757d;">
+  <div class="d-flex flex-column">
+    <div class="p-3">
+      <div class ="panel-group">
+        <div class = "panel panel-default">
+
+          <h2 class="text-center">Highscores:</h2>
+          <div class="table-responsive">
+            <table class ="table">
+              <tr class="text-center">
+                <th> Game </th>
+                <th> Date </th>
+                <th> Score </th>
+              </tr>
+              {% for score in scorelist|slice:":5" %}
+                <tr class="text-center">
+                  <td style="width:33%;">{{ score.game }} </td>
+                  <td style="width:33%;">{{ score.date }} </td>
+                  <td style="width:33%;">{{ score.score }} </td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+
+<br><br>
+</div>
+
+
+
+
+
+<!-- <div class="container">
+<div id="anchor" class="margined">
+<div id="iframeContainer" class="tile">
+<iframe id="iframeGame" src="https://www.w3schools.com"></iframe>
+</div>
+</div>
+</div> -->
+
+{% endblock content %}

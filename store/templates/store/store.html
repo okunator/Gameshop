@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h1>Shop for shit Games</h1>
+        <div class="list-games">
+          {% if game %}
+            {% for game in object_list %}
+              <a class="list-games-item" href="{url 'store:gamedetail'}">
+                <h3 class='title list-games-item-title'>{{game.name}}</h3>
+                <!-- Tähän pelin kansikuva -->
+              </a>
+            {% endfor %}
+          {% else %}
+            <p>No Games Here Yet!</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        {% if user.is_authenticated and user in game.owners.all %}
+          <a href="{% url store:addgame %}" class="btn btn-md btn-warning">Add a New Game</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

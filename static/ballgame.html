@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Breakout Game</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<style media="screen">
+
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    #myCanvas {
+      background: #eee;
+      display: block;
+    }
+
+		#buttons{
+			padding-top: 10px;
+			padding-left: 60px;
+      margin-left: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+	<canvas id="myCanvas" width="480" height="320"></canvas>
+	<div id="buttons">
+				 <button id="score" class="btn btn-outline-secondary">Submit score</button>
+				 <button id="save" class="btn btn-outline-secondary">Save</button>
+				 <button id="load" class="btn btn-outline-secondary">Load</button>
+				 <button id="restart" class="btn btn-outline-secondary">Restart</button>
+	</div>
+
+<script>
+
+// ========================== COMMUNICATION BETWEEN PARENT WINDOW =====================
+var message =  {
+    messageType: "SETTING",
+    options: {
+    	"width": 484,
+      "height": 380
+		}
+};
+window.parent.postMessage(message, "*");
+
+// Send the current score to the server
+var score = document.querySelector("#score");
+	score.addEventListener('click', function(e) {
+	  var message = {
+	    "messageType": "SCORE",
+	    "score": score
+	  };
+  	window.parent.postMessage(message, "*");
+});
+
+// Sends this game's state to the service.
+// Points and game moves are sent to the server
+var save = document.querySelector("#save");
+	save.addEventListener('click', function(e){
+		var gameState = getGameState();
+		var message = {
+			"messageType": "SAVE",
+			"gameState": {
+				"gameInfo": gameState,
+				"score": score
+			}
+		};
+		window.parent.postMessage(message, "*");
+});
+
+// sends a load request to the service
+var load = document.querySelector('#load');
+		load.addEventListener('click', function(){
+			var message = {
+		    "messageType": "LOAD_REQUEST",
+		  };
+		  window.parent.postMessage(message, "*");
+});
+
+function getGameState(){
+	var gameState = {
+			bricks: bricks,
+			level: level,
+			lives: lives
+	};
+	return gameState;
+}
+
+// function loadGameState(){
+//
+// }
+//
+// Listen incoming messages, and load the game
+// window.addEventListener("message", function(event) {
+//   if(event.data.messageType === "LOAD") {
+//     loadFromEvent(event.data.gameState);
+//   } else if (event.data.messageType === "ERROR") {
+//       alert(event.data.info);
+//   }
+// });
+
+// ========================================================================================
+// GAMEPLAY
+
+var canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+
+var x = (canvas.width/2)+Math.floor(Math.random()*21)-40;
+var y = canvas.height - 30;
+var dx = 6;
+var dy = -6;
+var ballRadius = 10;
+var paddleHeight = 10;
+var paddleWidth = 75;
+var paddleX = (canvas.width-paddleWidth)/2;
+var rightPressed = false;
+var leftPressed = false;
+var brickRowCount = 3;
+var brickColumnCount = 5;
+var brickWidth = 75;
+var brickHeight = 20;
+var brickPadding = 10;
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
+var score = 0;
+var lives = 3;
+var level = 1;
+var maxLevel = 5;
+var paused = false;
+
+var bricks = [];
+initBricks();
+function initBricks() {
+	for (c=0; c<brickColumnCount; c++) {
+		bricks[c] = [];
+		for (r=0; r<brickRowCount; r++) {
+			bricks[c][r] = {x: 0, y:0, status: 1};
+		}
+	}
+}
+
+
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function drawBricks() {
+  for(c=0; c<brickColumnCount; c++) {
+    for(r=0; r<brickRowCount; r++) {
+      if(bricks[c][r].status == 1) {
+        var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+        var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "#E0A800";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+
+function keyDownHandler(e) {
+  if(e.keyCode == 39) {
+    rightPressed = true;
+  }
+  else if(e.keyCode == 37) {
+    leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+  if(e.keyCode == 39) {
+    rightPressed = false;
+  }
+  else if(e.keyCode == 37) {
+    leftPressed = false;
+  }
+}
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+  ctx.fillStyle = "#E0A800";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function drawPaddle() {
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "##E0A800";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function collisionDetection() {
+  for(c=0; c<brickColumnCount; c++){
+    for(r=0; r<brickRowCount; r++){
+      var b = bricks[c][r];
+      if(b.status  == 1) {
+        if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+          dy = -dy;
+          b.status = 0;
+          score++;
+          if(score == brickRowCount*brickColumnCount) {
+						if (level === maxLevel){
+							alert("You win, gratz!");
+							document.location.reload();
+						} else {
+							level++;
+							brickRowCount++;
+							initBricks();
+							score = 0;
+							dx += 1;
+							dy = -dy;
+							dy -= 2;
+							x = (canvas.width/2)+Math.floor(Math.random()*21)-40;
+							y = canvas.height-30;
+							paddleX = (canvas.width-paddleWidth)/2;
+							paused = true;
+							ctx.beginPath();
+							ctx.rect(0,0,canvas.width, canvas.height);
+							ctx.fillStyle = '#28eded';
+							ctx.fill();
+							ctx.font = '16px Arial';
+							ctx.fillStyle = '#0095DD';
+							ctx.fillText("Level " + (level-1) + " completed, starting the next level in 3s", 90, 150);
+							setTimeout(function(){
+								paused = false;
+								draw();
+							}, 3000);
+						}
+
+          }
+        }
+      }
+    }
+  }
+}
+
+function togglePause(){
+    if (!paused)
+    {
+        paused = true;
+    } else if (paused)
+    {
+       paused = false;
+    }
+
+}
+
+function drawScore () {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Score: "+score, 8, 20);
+}
+
+function drawLives() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
+
+function drawLevel() {
+	ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText("Level: "+level, 210, 20);
+}
+
+function restartGame(){
+	document.location.reload();
+}
+
+
+function draw() {
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+  drawBricks()
+  drawBall();
+  drawPaddle();
+  drawScore();
+  drawLives();
+	drawLevel();
+  collisionDetection();
+
+  if(y + dy < ballRadius) {
+    dy = -dy;
+  } else if (y + dy > canvas.height-ballRadius) {
+    if(x > paddleX && x < paddleX + paddleWidth) {
+      dy = -dy;
+    } else {
+      lives--;
+      if(!lives) {
+				paused = true;
+				ctx.beginPath();
+				ctx.rect(0,0,canvas.width, canvas.height);
+				ctx.fillStyle = '#28eded';
+				ctx.fill();
+				ctx.font = '16px Arial';
+				ctx.fillStyle = '#0095DD';
+				ctx.fillText("GAME OVER!", 190, 150);
+      } else {
+        x = (canvas.width/2)+Math.floor(Math.random()*21)-30;
+        y = canvas.height-30;
+        paddleX = (canvas.width-paddleWidth)/2;
+				dy = -dy;
+      }
+    }
+  }
+  if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+
+  if(rightPressed && paddleX < canvas.width-paddleWidth) {
+    paddleX += 7;
+  }
+  else if(leftPressed && paddleX > 0) {
+    paddleX -= 7;
+  }
+
+  x += dx;
+  y += dy;
+	if(!paused){
+		  requestAnimationFrame(draw);
+	}
+
+}
+
+document.addEventListener("mousemove", mouseMoveHandler);
+
+function mouseMoveHandler(e) {
+  var relativeX = e.clientX - canvas.offsetLeft;
+  if(relativeX > 0+paddleWidth/2 && relativeX < canvas.width-paddleWidth/2) {
+    paddleX = relativeX - paddleWidth/2;
+  }
+}
+
+document.addEventListener('keydown', function (e) {
+	var key = e.keyCode;
+	if (key === 80)// p key
+	{
+	    togglePause();
+			draw();
+	}
+});
+
+var restart = document.querySelector('#restart');
+	restart.addEventListener('click', function (e) {
+		restartGame();
+});
+
+ctx.beginPath();
+ctx.rect(0,0,canvas.width, canvas.height);
+ctx.fillStyle = '#28eded';
+ctx.fill();
+ctx.font = '16px Arial';
+ctx.fillStyle = '#0095DD';
+ctx.fillText("Game starts in three seconds", 140, 150);
+setTimeout(function(){
+	draw();
+}, 3000);
+
+</script>
+</body>
+</html>

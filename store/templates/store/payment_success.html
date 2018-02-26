@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<div class="container">
+    <div class="col-md-12 row">
+      <div class="d-flex justify-content-center mx-auto">
+        <h4>Thank you for buying the game!</h4>
+      </div>
+    </div>
+    <br>
+    <div class="col-md-12 row-padded">
+      <div class="d-flex justify-content-center">
+        <a href="{% url 'play:playdetail' slug=game.slug %}" class="btn btn-block btn-success">Try out the new game</a> <!--Needs proper linking still -->
+      </div>
+    </div>
+</div>
+{% endblock content %}

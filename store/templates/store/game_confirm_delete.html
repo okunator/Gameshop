@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block content %}
+<br>
+<div class="container d-flex justify-content-center">
+ <form caction="" method="post">
+   {% csrf_token %}
+   <h1>Are You sure you want to delete your game: "{{ object.name }}" ?</h1><br>
+   <input type="submit" class="btn btn-danger btn-lg btn-block" value="Confirm">
+ </form>
+</div>
+{% endblock content %}

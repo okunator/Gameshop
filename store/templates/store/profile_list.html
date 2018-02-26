@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br>
+<div class="container" style="border:5px solid #6c757d;">
+  <div class="d-flex flex-column">
+    <div class="p-3">
+      <div class ="panel-group">
+        <div class = "panel panel-default">
+          <div class="panel-heading" style="border:5px solid #6c757d;">
+            <h2 class="text-center">User Details: </h2>
+            <p class="text-center"> Username: {{ user.username }} </p>
+            <p class="text-center"> Developer status: {% if user.is_developer %} Yes {% else %} No {% endif %} </p>
+            <p class="text-center">Email: {{ user.email }} </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container d-flex justify-content-center mx-auto">
+      <a href="{% url 'store:password_change' %}" class="btn btn-block btn-outline-secondary" style="border:2px solid;">Change Password</a>
+    </div>
+    <br>
+
+    <div class="container d-flex justify-content-center mx-auto">
+      <a href="{% url 'accounts:profile_update' username=user.username %}" class="btn btn-block btn-outline-secondary" style="border:2px solid;">Update profile</a>
+    </div>
+
+    <div class="p-3">
+      <div class ="panel-group">
+        <div class = "panel panel-default">
+          <div class="panel-heading" style="border:5px solid #6c757d;">
+            <h2 class="text-center"> Personal Library: </h2>
+
+
+            <div class="table-responsive">
+              <table class ="table">
+                <tr class="text-center">
+                  <th> Title </th>
+                  <th> Genre </th>
+                  <th> Price </th>
+                </tr>
+                {% for game in user.my_games.all  %}
+
+                <tr class="text-center">
+                  <td style="width:33%;"> <a href="{% url 'store:gamedetail' slug=game.slug %}"> {{ game.name }} </a> </td>
+                  <td style="width:33%;">{{ game.genre }} </td>
+                  <td style="width:33%;">{{ game.price }} $ </td>
+                </tr>
+                {% empty %}
+                <p class="text-center">No games in your library. Purchase some <a href="{% url 'home' %}"> here!</a></p>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if user.is_developer %}
+    <div class="p-3">
+      <div class ="panel-group">
+        <div class = "panel panel-default" >
+          <div class="panel-heading " style="border:5px solid #6c757d;">
+            <h2 class="text-center"> Created Games </h2>
+            <div class=" d-flex justify-content-center">
+              {% for game in game_list %}
+                {% if user == game.developer %}
+                <li class ="text-center" style="display:inline; padding:10px;"> <a href="{% url 'store:gamedetail' slug=game.slug %}"> {{ game.name }} </a> </li>
+                {% endif %}
+                {% empty %}
+                <p>You have not submitted any games to the store</p>
+              {% endfor %}
+            </div>
+            <div class="d-flex justify-content-center mx-auto">
+              <a href="{% url 'store:addgame' %}" class="d-block btn btn-block btn-warning" style="border-radius:0;">Add a New Game</a>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
+</div>
+<br><br>
+
+
+
+
+
+
+{% endblock content %}

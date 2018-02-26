@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block content %}
+<div class="container">
+  <h1>Login</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% load socialaccount %}
+    {% providers_media_js %}
+
+
+
+    <input type="submit" class="btn btn-block" value="Login">
+    <a href="{% provider_login_url "facebook" method="js_sdk" %}" class="btn btn-block btn-social btn-facebook text-white" style="background-color:#3b5998;text-align:center">
+      <span class="fa fa-facebook"></span>
+                   Sign in with Facebook
+     </a>
+
+
+    <a href="{% url "password_reset" %}">Can't remember your password?</a>
+  </form>
+
+
+ </div>
+
+
+
+{% endblock content %}

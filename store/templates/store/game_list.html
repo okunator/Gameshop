@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+ <div class="container">
+   <div class="row">
+     <div class="col-md-12">
+      <div class="d-flex justify-content-center mx-auto">
+        <h1>Shop for indie Games</h1>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-12 d-flex align-items-stretch">
+          <div class="list-games col-md-12">
+            <ul class="list-unstyled">
+              {% for game in object_list %}
+              <li>
+                <div class="card mb-4 border-dark" style="box-shadow: 3px 3px 9px;">
+                  {% if game.coverpicture %}
+                   <img src="{% get_media_prefix %}{{ game.coverpicture }}">
+                  {% else %}
+                   <img src="{% get_media_prefix %}cover_pics/gamepic2.png">
+                  {% endif %}
+
+                  <div class="content d-flex justify-content-center">
+                    <a class="list-games-item" href="{% url 'store:gamedetail' slug=game.slug %}">
+                      <h3 class='title list-games-item-title'>{{game.name}}</h3>
+                      <!-- Tähän pelin kansikuva -->
+                    </a>
+                  </div>
+                  {% if user == game.developer %}
+                   <div class="d-flex justify-content-center" style="font-size: 20px">self-made</div>
+                  {% elif user in game.owners.all %}
+                   <div class="d-flex justify-content-center" style="font-size: 20px">bought</div>
+                  {% else %}
+                   <div class="d-flex justify-content-center" style="font-size: 20px">buyable</div>
+                  {% endif %}
+                </div>
+              </li>
+              {% empty %}
+                <p>No Games Here Yet!</p>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+     </div>
+     <div class="col-md-12">
+       {% if user.is_authenticated and user.is_developer %}
+       <div class="d-flex justify-content-center">
+         <a href="{% url 'store:addgame' %}" class="btn btn-block btn-warning">Add a New Game</a>
+       </div>
+       {% endif %}
+     </div>
+   </div>
+ </div>
+ <br><br>
+</div>
+{% endblock content %}
