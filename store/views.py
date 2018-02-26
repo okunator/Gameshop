@@ -106,9 +106,9 @@ class BuyView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
         context['pid'] = pid
         context['sid'] = sid
         context['secret_key'] = secret_key
-        context['success_url'] = 'http://localhost:8000/buy/paymentsuccess'
-        context['error_url'] = 'http://localhost:8000/buy/paymentstopped'
-        context['cancel_url'] = 'http://localhost:8000/buy/paymentstopped'
+        context['success_url'] = 'https://indiegames.herokuapp.com/buy/paymentsuccess'
+        context['error_url'] = 'https://indiegames.herokuapp.com/buy/paymentstopped'
+        context['cancel_url'] = 'https://indiegames.herokuapp.com/buy/paymentstopped'
         context['checksumstr'] = checksumstr
         context['checksumstr2'] = checksumstr2
         context['checksum'] = checksum
