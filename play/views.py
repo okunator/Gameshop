@@ -57,6 +57,7 @@ class PlayTemplateView(LoginRequiredMixin, UserPassesTestMixin, generic.Template
 class PlayDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Game
     template_name = 'play/play_detail.html'
+    raise_exception = True  # raises exeption if user doesnt pass test function
 
     # let's create a post method for the view so it supports POST-requests
     def post(self, *args, **kwargs):
@@ -99,7 +100,12 @@ class PlayDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView
                     return HttpResponse("")
     # permissions
     def test_func(self, *args, **kwargs):
-        return True
+        # user owns the game
+        game = self.get_object()
+        if game.owners.all().filter(username__iexact = self.request.user.username).exists():
+            return True
+        else:
+            return False
 
     # context dict
     def get_context_data(self, *args, **kwargs):
