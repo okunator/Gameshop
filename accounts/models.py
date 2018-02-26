@@ -86,7 +86,6 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     is_developer = models.BooleanField(default=False)
     my_games = models.ManyToManyField(Game, blank=True)
-    games_sold = models.PositiveIntegerField(blank=True, null=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'username'

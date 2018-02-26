@@ -32,6 +32,7 @@ class Game(models.Model):
     url = models.URLField(null=False, blank=False, unique=True)
     price = models.DecimalField(null=False, blank=False, max_digits=5,
                                 decimal_places=2,validators=[MinValueValidator(Decimal('0.00'))])
+    games_sold = models.PositiveIntegerField(default = 0)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

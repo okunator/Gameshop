@@ -12,12 +12,8 @@ from play.models import Score, GameSave
 User = settings.AUTH_USER_MODEL
 
 
-class PlayTemplateView(LoginRequiredMixin, UserPassesTestMixin, generic.TemplateView):
+class PlayTemplateView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'play/play.html'
-
-    # permissions
-    def test_func(self):
-        return True
 
     # context dict
     def get_context_data(self, *args, **kwargs):

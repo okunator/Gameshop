@@ -1,4 +1,5 @@
 // SOURCE: http://codepen.io/Thibka/pen/mWGxNj
+// This is an interactive canvas that is not in use on this site right now
 var canvas = document.getElementById('canvas'),
   context = canvas.getContext('2d'),
   canvasWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth),

@@ -127,8 +127,8 @@ class PaymentSuccessTemplateView(LoginRequiredMixin, UserPassesTestMixin, generi
         print(game.owners.all())
 
         # user is trying to use someboy elses payment succesful URL
-        # if self.request.user.username != pid[0]:
-        #     return False
+        if self.request.user.username != pid[0]:
+            return False
 
         #user already owns the game
         if game.owners.all().filter(username__iexact=self.request.user.username).exists():
@@ -137,6 +137,9 @@ class PaymentSuccessTemplateView(LoginRequiredMixin, UserPassesTestMixin, generi
         # now we can do the database changes
         self.request.user.my_games.add(game)
         game.owners.add(self.request.user)
+        game.games_sold += 1
+        game.save()
+
         return True
 
     def get_context_data(self, *args, **kwargs):

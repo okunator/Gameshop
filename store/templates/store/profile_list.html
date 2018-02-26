@@ -58,29 +58,42 @@
     </div>
 
     {% if user.is_developer %}
-    <div class="p-3">
-      <div class ="panel-group">
-        <div class = "panel panel-default" >
-          <div class="panel-heading " style="border:5px solid #6c757d;">
-            <h2 class="text-center"> Created Games </h2>
-            <div class=" d-flex justify-content-center">
-              {% for game in game_list %}
-                {% if user == game.developer %}
-                <li class ="text-center" style="display:inline; padding:10px;"> <a href="{% url 'store:gamedetail' slug=game.slug %}"> {{ game.name }} </a> </li>
-                {% endif %}
-                {% empty %}
-                <p>You have not submitted any games to the store</p>
-              {% endfor %}
+      <div class="p-3">
+        <div class ="panel-group">
+          <div class = "panel panel-default" >
+            <div class="panel-heading " style="border:2px solid #6c757d;">
+              <h2 class="text-center"> Submitted Games </h2>
+              <div class=" d-flex justify-content-center">
+                {% for game in game_list %}
+                  {% if user == game.developer %}
+                    <div class="table-responsive">
+                      <table class ="table">
+                        <tr class="text-center">
+                          <th> Title </th>
+                          <th> Units Sold </th>
+                        </tr>
+
+
+                        <tr class ="text-center">
+                          <td style="width:50%;"> <a href="{% url 'store:gamedetail' slug=game.slug %}"> {{ game.name }} </a> </td>
+                          <td style="width:50%;">{{ game.games_sold }} </td>
+                        </tr>
+                      </table>
+                    </div>
+                  {% endif %}
+                  {% empty %}
+                    <p>You have not submitted any games to the store</p>
+                {% endfor %}
+              </div>
+              <div class="d-flex justify-content-center mx-auto">
+                <a href="{% url 'store:addgame' %}" class="d-block btn btn-block btn-warning" style="border-radius:0;">Add a New Game</a>
+              </div>
+              <br>
             </div>
-            <div class="d-flex justify-content-center mx-auto">
-              <a href="{% url 'store:addgame' %}" class="d-block btn btn-block btn-warning" style="border-radius:0;">Add a New Game</a>
-            </div>
-            <br>
           </div>
         </div>
       </div>
-    </div>
-    {% endif %}
+      {% endif %}
   </div>
 </div>
 
