@@ -7,7 +7,7 @@
     <div class="p-3">
       <div class ="panel-group">
         <div class = "panel panel-default">
-          <div class="panel-heading" style="border:5px solid #6c757d;">
+          <div class="panel-heading" style="border:2px solid #6c757d;">
             <h2 class="text-center">User Details: </h2>
             <p class="text-center"> Username: {{ user.username }} </p>
             <p class="text-center"> Developer status: {% if user.is_developer %} Yes {% else %} No {% endif %} </p>
@@ -18,18 +18,18 @@
     </div>
 
     <div class="container d-flex justify-content-center mx-auto">
-      <a href="{% url 'store:password_change' %}" class="btn btn-block btn-outline-secondary" style="border:2px solid;">Change Password</a>
+      <a href="{% url 'store:password_change' %}" class="btn btn-block btn-outline-secondary" style="border:2px solid; border-radius:0">Change Password</a>
     </div>
     <br>
 
     <div class="container d-flex justify-content-center mx-auto">
-      <a href="{% url 'accounts:profile_update' username=user.username %}" class="btn btn-block btn-outline-secondary" style="border:2px solid;">Update profile</a>
+      <a href="{% url 'accounts:profile_update' username=user.username %}" class="btn btn-block btn-outline-secondary" style="border:2px solid; border-radius:0">Update profile</a>
     </div>
 
     <div class="p-3">
       <div class ="panel-group">
         <div class = "panel panel-default">
-          <div class="panel-heading" style="border:5px solid #6c757d;">
+          <div class="panel-heading" style="border:2px solid #6c757d;">
             <h2 class="text-center"> Personal Library: </h2>
 
 
