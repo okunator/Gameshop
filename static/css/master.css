@@ -3,3 +3,17 @@ html, body {
   font-family: 'VT323', monospace;
   background-color: #fff;
 }
+
+.footer {
+  z-index: 9998;
+  padding: 40px 0;
+  font-family: coves;
+  font-size: 18px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  background-color: rgb(31, 56, 63);
+}
+
+.footer .row {
+  width: 100%;
+}

@@ -9,29 +9,37 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
-    <link rel="stylesheet" href="{% static "/css/master.css" %}">
+    <link rel="stylesheet" href="{% static "css/master.css" %}">
   </head>
   <body>
-    <nav class="navbar mynav navbar-expand-lg navbar-dark bg-dark navbar-static-top" role='navigation' id='navbar'>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark" role='navigation'>
       <div class="container">
-        <a class="navbar-brand mynav" href="{% url 'home' %}">STORE</a>
-        <ul class="nav navbar-nav navbar-right">
-          {% if user.is_authenticated %}
-            {% if user.is_developer %}
-              <span class="navbar-text"> Logged in as {{user.username}} (developer) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            {% else %}
-              <span class="navbar-text"> Logged in as {{user.username}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            {% endif %}
+        <a class="navbar-brand nav-item nav-link active" href="{% url 'home' %}">STORE</a>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#mainNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <li class="nav-item"><a a class="nav-link" href="{% url 'store:profile' username=user.username %}">Profile</a></li>
-            <li class="nav-item"><a a class="nav-link" href="{% url 'play:play' %}">Stats</a></li>
-            <li class="nav-item"><a a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
-          {% else %}
-            <span class="navbar-text">You haven't logged in! &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <li class="nav-item"><a a class="nav-link" href="{% url 'accounts:login' %}">Login</a></li>
-            <li class="nav-item"><a a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a></li>
-          {% endif %}
-        </ul>
+        <div class="collapse navbar-collapse text-center" id="mainNav">
+          <ul class="nav navbar-nav navbar-right ml-auto">
+            <div class="navbar-nav">
+                {% if user.is_authenticated %}
+                  {% if user.is_developer %}
+                    <span class="navbar-text" style="margin-right:25px;"> Logged in as {{user.username}} (developer)</span>
+                  {% else %}
+                    <span class="navbar-text" style="margin-right:25px;"> Logged in as {{user.username}}</span>
+                  {% endif %}
+                    <a class="nav-item nav-link" href="{% url 'store:profile' username=user.username %}">Profile</a>
+                    <a class="nav-item nav-link" href="{% url 'play:play' %}">Stats</a>
+                    <a class="nav-item nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                {% else %}
+                  <span class="navbar-text" style="margin-right:25px;">You haven't logged in!</span>
+                  <a class="nav-item nav-link" href="{% url 'accounts:login' %}">Login</a>
+                  <a class="nav-item nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+                {% endif %}
+            </div>
+          </ul>
+        </div>
+
       </div>
     </nav>
 
