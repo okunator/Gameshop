@@ -14,7 +14,7 @@ Web software development course project
 - Javascript
 
 **Back-end**
-- PosgresDB
+- PostgreSQL
 - Django
 - Python
 
