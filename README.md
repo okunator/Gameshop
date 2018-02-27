@@ -27,7 +27,7 @@ Project can be found [here](https://indiegames.herokuapp.com/)
   4. create a superuser ```python manage.py createsuperuser```
   5. run the server ```python manage.py runserver```
   6. go to your Localhost:8000/admin and sign in with the super user
-  7. You need to add a facebook app to get the site working in the admin-site 
-  (you can create a facebook-app here [developers.facebook](https://developers.facebook.com/)). 
-  All you need to do is to insert the url in Sites-table and App-ID and secret key of your app in Social-apps-table
+  7. You need to add a facebook app in the DB to get the site working. This is done in the admin-site. 
+  You can create a facebook-app here [developers.facebook](https://developers.facebook.com/). 
+  All you need to do is to insert the url in the Sites-table and App-ID and secret key of your app in Social-apps-table
   8. After adding the app you should be ready to go!
