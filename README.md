@@ -31,3 +31,7 @@ Project can be found [here](https://indiegames.herokuapp.com/)
   You can create a facebook-app here [developers.facebook](https://developers.facebook.com/). 
   All you need to do is to insert the url in the Sites-table and App-ID and secret key of your app in Social-apps-table
   8. After adding the app you should be ready to go!
+  
+  ![alt text](/screenshots/Frontpage.PNG)
+  ![alt text](/screenshots/Gaming.PNG)
+  ![alt text](/screenshots/Profiles.PNG)
