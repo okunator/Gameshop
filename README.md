@@ -1,10 +1,10 @@
 # Gameshop
 Web software development course project
 
-  Gameshop is a platform where developers can "sell" JS games they developed through a mockup payment service created
-  for the course. No real transactions with this app. Users can Sign Up to the service as regular users or developers
-  and buy games others have developed or add new game for sale. One game simple Brick Pong game has been developed for
-  this project for demonstration. The game service supports loading and saving gamestaes and scores.
+  Gameshop is a platform where developers can "sell" JS games they've developed. Payments go through a mockup payment service created
+  for the course. No real transactions are happening in this app. Users can Sign Up to the service as regular users or developers
+  and buy games others have developed or add new game for sale. One simple Brick Pong game has been developed for
+  this project for demonstration. The game service supports loading and saving gamestates and scores.
     
 **Front-end**
 - HTML5
